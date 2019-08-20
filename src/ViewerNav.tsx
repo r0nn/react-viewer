@@ -21,7 +21,7 @@ export default class ViewerNav extends React.Component<ViewerNavProps, any> {
   }
 
   render() {
-    let marginLeft = `calc(50% - ${this.props.activeIndex + 1} * 31px)`;
+    let marginLeft = `calc(50% - ${this.props.activeIndex + 1} * 109px)`;
     let listStyle = {
       marginLeft: marginLeft,
     };
@@ -35,7 +35,7 @@ export default class ViewerNav extends React.Component<ViewerNavProps, any> {
             className={index === this.props.activeIndex ? 'active' : ''}
             onClick={() => { this.handleChangeImg(index); }}
             >
-              <img src={item.src} alt={item.alt} />
+              <img src={!!item.thumbSrc ? item.thumbSrc : item.src} alt={item.alt} />
             </li>,
             )
           }
