@@ -27,6 +27,7 @@ export interface ViewerCoreState {
   scaleY?: number;
   loading?: boolean;
   loadFailed?: boolean;
+  isAltImage?: boolean;
 }
 
 export default class ViewerCore extends React.Component<ViewerProps, ViewerCoreState> {
@@ -79,6 +80,7 @@ export default class ViewerCore extends React.Component<ViewerProps, ViewerCoreS
       scaleY: this.props.defaultScale,
       loading: false,
       loadFailed: false,
+      isAltImage: false,
     };
 
     this.setContainerWidthHeight();
@@ -166,7 +168,7 @@ export default class ViewerCore extends React.Component<ViewerProps, ViewerCoreS
     return [width, height];
   }
 
-  loadImgSuccess = (activeImage: ImageDecorator, imgWidth, imgHeight, isNewImage: boolean) => {
+  loadImgSuccess = (activeImage: ImageDecorator, imgWidth, imgHeight, isNewImage: boolean, isAltImage: boolean = false) => {
     let realImgWidth = imgWidth;
     let realImgHeight = imgHeight;
     if (this.props.defaultSize) {
@@ -197,6 +199,7 @@ export default class ViewerCore extends React.Component<ViewerProps, ViewerCoreS
       rotate: 0,
       scaleX: scaleX,
       scaleY: scaleY,
+      isAltImage: isAltImage,
     });
   }
 
@@ -207,38 +210,50 @@ export default class ViewerCore extends React.Component<ViewerProps, ViewerCoreS
       activeImage = images[activeIndex];
     }
     let loadComplete = false;
+    let isAltImage = false;
     let img = new Image();
     this.setState({
       activeIndex: activeIndex,
       loading: true,
       loadFailed: false,
+      isAltImage: false,
     }, () => {
       img.onload = () => {
         if (!loadComplete) {
-          this.loadImgSuccess(activeImage, img.width, img.height, isNewImage);
+          this.loadImgSuccess(activeImage, img.width, img.height, isNewImage, isAltImage);
         }
       };
       img.onerror = () => {
+        if (!!activeImage.altSrc && !isAltImage) {
+          isAltImage = true;
+          img.src = activeImage.altSrc;
+          if (img.complete) {
+            loadComplete = true;
+            this.loadImgSuccess(activeImage, img.width, img.height, isNewImage, isAltImage);
+          }
+          return;
+        }
         if (this.props.defaultImg) {
           this.setState({
             loadFailed: true,
           });
           const deafultImgWidth = this.props.defaultImg.width || this.containerWidth * .5;
           const defaultImgHeight = this.props.defaultImg.height || this.containerHeight * .5;
-          this.loadImgSuccess(activeImage, deafultImgWidth, defaultImgHeight, isNewImage);
+          this.loadImgSuccess(activeImage, deafultImgWidth, defaultImgHeight, isNewImage, isAltImage);
         } else {
           this.setState({
             activeIndex: activeIndex,
             imageWidth: 0,
             imageHeight: 0,
             loading: false,
+            isAltImage: isAltImage,
           });
         }
       };
       img.src = activeImage.src;
       if (img.complete) {
         loadComplete = true;
-        this.loadImgSuccess(activeImage, img.width, img.height, isNewImage);
+        this.loadImgSuccess(activeImage, img.width, img.height, isNewImage, isAltImage);
       }
     });
   }
@@ -536,6 +551,7 @@ export default class ViewerCore extends React.Component<ViewerProps, ViewerCoreS
   getActiveImage = (activeIndex = undefined) => {
     let activeImg: ImageDecorator = {
       src: '',
+      altSrc: '',
       alt: '',
       downloadUrl: '',
     };
@@ -581,6 +597,7 @@ export default class ViewerCore extends React.Component<ViewerProps, ViewerCoreS
   render() {
     let activeImg: ImageDecorator = {
       src: '',
+      altSrc: '',
       alt: '',
     };
 

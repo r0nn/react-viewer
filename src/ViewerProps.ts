@@ -5,6 +5,7 @@ export interface ViewerImageSize {
 
 export interface ImageDecorator {
   src: string;
+  altSrc?: string;
   thumbSrc?: string;
   alt?: string;
   downloadUrl?: string;
