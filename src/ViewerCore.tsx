@@ -168,7 +168,12 @@ export default class ViewerCore extends React.Component<ViewerProps, ViewerCoreS
     return [width, height];
   }
 
-  loadImgSuccess = (activeImage: ImageDecorator, imgWidth, imgHeight, isNewImage: boolean, isAltImage: boolean = false) => {
+  loadImgSuccess = (
+      activeImage: ImageDecorator,
+      imgWidth, imgHeight,
+      isNewImage: boolean,
+      isAltImage: boolean = false,
+    ) => {
     let realImgWidth = imgWidth;
     let realImgHeight = imgHeight;
     if (this.props.defaultSize) {
@@ -659,6 +664,7 @@ export default class ViewerCore extends React.Component<ViewerProps, ViewerCoreS
           loading={this.state.loading}
           drag={this.props.drag}
           container={this.props.container}
+          window={this.props.window}
           onCanvasMouseDown={this.handleCanvasMouseDown}
         />
         {this.props.noFooter || (

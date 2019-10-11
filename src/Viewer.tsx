@@ -37,10 +37,14 @@ export default class Viewer extends React.Component<ViewerProps, any> {
         }
       }
       let instance = this;
+      let props =  {
+        ...this.props,
+        container: this.container,
+      };
       ReactDOM.unstable_renderSubtreeIntoContainer(
         this,
         <ViewerCore
-          {...this.props}
+          {...props}
           />,
         this.container,
         function () {

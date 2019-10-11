@@ -19,6 +19,7 @@ export interface ViewerCanvasProps {
   loading: boolean;
   drag: boolean;
   container: HTMLElement;
+  window?: Window;
   onCanvasMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
@@ -98,9 +99,13 @@ export default class ViewerCanvas extends React.Component<ViewerCanvasProps, Vie
       funcName = 'removeEventListener';
     }
 
-    document[funcName]('click', this.handleMouseUp, false);
-    document[funcName]('mousemove', this.handleMouseMove, false);
-    window[funcName]('resize', this.handleResize, false);
+    this.props.container[funcName]('click', this.handleMouseUp, { capture: false, passive: false });
+    this.props.container[funcName]('mousemove', this.handleMouseMove, { capture: false, passive: false });
+    if (this.props.window) {
+      this.props.window[funcName]('resize', this.handleResize, { capture: false, passive: false });
+    } else {
+      window[funcName]('resize', this.handleResize, { capture: false, passive: false });
+    }
   }
 
   componentDidUpdate(prevProps: ViewerCanvasProps) {
