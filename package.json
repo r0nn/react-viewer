@@ -1,5 +1,5 @@
 {
-  "name": "react-viewer",
+  "name": "@r0nn/react-viewer",
   "version": "2.10.2",
   "description": "react image viewer",
   "main": "dist/index",
@@ -14,7 +14,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/infeng/react-viewer.git"
+    "url": "git+https://github.com/r0nn/react-viewer.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "keywords": [
     "react",
